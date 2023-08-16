@@ -11,7 +11,7 @@ producer = KafkaProducer(
     value_serializer=lambda m: json.dumps(m).encode("ascii"),
 )
 
-topic = "prueba-1"
+topic = "finnhub"
 
 
 # Redpanda handlers

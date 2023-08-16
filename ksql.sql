@@ -1,5 +1,5 @@
 # Create a stream called `finnhub`
-CREATE STREAM finnhub (symbol string, price double) WITH (KAFKA_TOPIC='finnhub');
+CREATE STREAM finnhub (symbol string, price double) WITH (KAFKA_TOPIC='finnhub', VALUE_FORMAT='JSON');
 
 # Create a table called `finnhub_avg_price`
 CREATE TABLE finnhub_avg_price AS
@@ -13,7 +13,7 @@ CREATE TABLE finnhub_transactions AS
     FROM finnhub
     GROUP BY symbol;
 
-# Create a table called `finnhub_min_price`
+# Create a table called 'finnhub_min_price'
 CREATE TABLE finnhub_min_price AS
     SELECT symbol, MIN(price) AS min_price
     FROM finnhub
