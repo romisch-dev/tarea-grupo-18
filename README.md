@@ -32,3 +32,15 @@ El proyecto debe desarrollarse en los grupos previamente formados. El entregable
 •Una grabación de pantalla mostrando el sistema en funcionamiento y explicando brevemente los pasos que se siguieron para su implementación.
 
 Fecha límite de entrega: 21-08-2023 23:59
+
+
+# Instrucciones para ejecutar el proyecto
+- 1. Descargar las imagenes y levantar el docker
+- docker-compose up -d // descarga y levanta
+- docker ps // para listar las imagenes
+- 2. Ejecutar el producer.py
+- python producer.py
+- 3. Ejecutar el ksqlcli para crear el streams y las tablas. (Se encuenta en el archivo ksql.sql las consultas).
+- docker exec -it <nombre de ksql-cli> ksql http://ksqldb-server:8088
+
+

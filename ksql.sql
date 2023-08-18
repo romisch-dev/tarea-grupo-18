@@ -1,24 +1,32 @@
--- Crear un stream para cada símbolo
-CREATE STREAM AAPL_STREAM (symbol STRING, price DOUBLE, timestamp BIGINT) WITH (KAFKA_TOPIC='AAPL', VALUE_FORMAT='JSON');
-CREATE STREAM AMZN_STREAM (symbol STRING, price DOUBLE, timestamp BIGINT) WITH (KAFKA_TOPIC='AMZN', VALUE_FORMAT='JSON');
-CREATE STREAM BTCUSDT_STREAM (symbol STRING, price DOUBLE, timestamp BIGINT) WITH (KAFKA_TOPIC='BINANCE:BTCUSDT', VALUE_FORMAT='JSON');
+# Create a stream called `finnhub`
+CREATE STREAM FINNHUB (SYMBOL STRING, PRICE DOUBLE) WITH (KAFKA_TOPIC='finnhub', KEY_FORMAT='KAFKA', PARTITIONS=2, VALUE_FORMAT='JSON');
 
--- Calcular el promedio ponderado de precio por símbolo
-CREATE TABLE AAPL_AVG_PRICE AS SELECT symbol, AVG(price) AS avg_price FROM AAPL_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
-CREATE TABLE AMZN_AVG_PRICE AS SELECT symbol, AVG(price) AS avg_price FROM AMZN_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
-CREATE TABLE BTCUSDT_AVG_PRICE AS SELECT symbol, AVG(price) AS avg_price FROM BTCUSDT_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
+# Create a table called `finnhub_avg_price`
+CREATE TABLE finnhub_avg_price AS
+SELECT symbol, AVG(price) AS avg_price FROM finnhub GROUP BY symbol EMIT CHANGES;
 
--- Calcular el número de transacciones por símbolo
-CREATE TABLE AAPL_TRANSACTION_COUNT AS SELECT symbol, COUNT(*) AS transaction_count FROM AAPL_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
-CREATE TABLE AMZN_TRANSACTION_COUNT AS SELECT symbol, COUNT(*) AS transaction_count FROM AMZN_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
-CREATE TABLE BTCUSDT_TRANSACTION_COUNT AS SELECT symbol, COUNT(*) AS transaction_count FROM BTCUSDT_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
+# Create a table called `finnhub_transactions`
+CREATE TABLE finnhub_transactions AS
+SELECT symbol, COUNT(*) AS num_transactions FROM finnhub GROUP BY symbol EMIT CHANGES;
 
--- Encontrar el máximo precio registrado por símbolo
-CREATE TABLE AAPL_MAX_PRICE AS SELECT symbol, MAX(price) AS max_price FROM AAPL_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
-CREATE TABLE AMZN_MAX_PRICE AS SELECT symbol, MAX(price) AS max_price FROM AMZN_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
-CREATE TABLE BTCUSDT_MAX_PRICE AS SELECT symbol, MAX(price) AS max_price FROM BTCUSDT_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
+# Create a table called 'finnhub_min_price'
+CREATE TABLE finnhub_min_price AS
+SELECT symbol, MIN(price) AS min_price FROM finnhub GROUP BY symbol emit changes;
 
--- Encontrar el mínimo precio registrado por símbolo
-CREATE TABLE AAPL_MIN_PRICE AS SELECT symbol, MIN(price) AS min_price FROM AAPL_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
-CREATE TABLE AMZN_MIN_PRICE AS SELECT symbol, MIN(price) AS min_price FROM AMZN_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
-CREATE TABLE BTCUSDT_MIN_PRICE AS SELECT symbol, MIN(price) AS min_price FROM BTCUSDT_STREAM WINDOW TUMBLING (SIZE 1 MINUTE) GROUP BY symbol;
+
+# Create a table called `finnhub_max_price`
+CREATE TABLE finnhub_max_price AS
+SELECT symbol, MAX(price) AS max_price FROM finnhub GROUP BY symbol emit changes;
+
+
+* ¿Cuál fue el promedio ponderado de precio de una unidad por cada uno de los símbolos procesados? (por ejemplo, AAPL)
+SELECT symbol, avg_price FROM finnhub_avg_price;
+
+* ¿Cuántas transacciones se procesaron por símbolo?
+SELECT symbol, num_transactions FROM finnhub_transactions;
+
+* ¿Cuál fue el precio máximo registrado por símbolo?
+SELECT symbol, max_price FROM finnhub_max_price;
+
+* ¿Cuál fue el precio mínimo registrado por símbolo?
+SELECT symbol, min_price FROM finnhub_min_price;
