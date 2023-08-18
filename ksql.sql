@@ -7,7 +7,7 @@ SELECT symbol, AVG(price) AS avg_price FROM finnhub GROUP BY symbol EMIT CHANGES
 
 # Create a table called `finnhub_transactions`
 CREATE TABLE finnhub_transactions AS
-SELECT symbol, COUNT(*) AS num_transactionsFROM finnhub GROUP BY symbol EMIT CHANGES;
+SELECT symbol, COUNT(*) AS num_transactions FROM finnhub GROUP BY symbol EMIT CHANGES;
 
 # Create a table called 'finnhub_min_price'
 CREATE TABLE finnhub_min_price AS
