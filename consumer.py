@@ -13,7 +13,7 @@ consumer = KafkaConsumer(
     value_deserializer=lambda m: json.loads(m.decode("ascii")),
 )
 
-consumer.subscribe("prueba-1")
+consumer.subscribe("finnhub")
 
 try:
     for message in consumer:
