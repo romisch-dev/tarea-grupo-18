@@ -1,6 +1,8 @@
 # Create a stream called `finnhub`
 CREATE STREAM FINNHUB (SYMBOL STRING, PRICE DOUBLE) WITH (KAFKA_TOPIC='finnhub', KEY_FORMAT='KAFKA', PARTITIONS=2, VALUE_FORMAT='JSON');
 
+CREATE STREAM FINNHUB (SYMBOL STRING, PRICE DOUBLE) WITH (KAFKA_TOPIC='finnhub', KEY_FORMAT='KAFKA', PARTITIONS=2, VALUE_FORMAT='JSON');
+
 # Create a table called `finnhub_avg_price`
 CREATE TABLE finnhub_avg_price AS
 SELECT symbol, AVG(price) AS avg_price FROM finnhub GROUP BY symbol EMIT CHANGES;
