@@ -1,3 +1,10 @@
+# Intregrantes:
+- Felipe Sebastian Benitez Gonzalez
+- Sara Romina Bogarin Colman
+- Christian Cano Stein
+- Mario Raul Salazar
+- Romina Nahir Scherzer Sánchez
+
 # Tarea módulo data streaming
 
 # Objetivo
